@@ -10,7 +10,7 @@ ventana = Tk()
 # Modificamos en tamaño de la ventana 
 ventana.geometry('600x400')
 
-# Función para abrir un archivo de texto
+# Función para abrir un archivo de texto (.sub o .psub)
 def abrir_archivo():
     # Definimos los tipos de archivo permitidos
     tipos_archivo = [('Archivos de psubasta', '*.sub'),('Archivos de subasta', '*.sub') ]
