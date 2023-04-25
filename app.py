@@ -51,11 +51,11 @@ def abrir_archivo():
 
 #Función para limpiar pantalla
 def limpiar_pantalla():
-    trio.pack_forget()
-    oferentes.pack_forget()
-    venta_acciones.pack_forget()
-    venta_acciones_gob.pack_forget()
-    ganancia_gob.pack_forget()
+    trio.config(text="")
+    oferentes.config(text="")
+   # venta_acciones.pack_forget()
+   # venta_acciones_gob.pack_forget()
+   # ganancia_gob.pack_forget()
 
 #funcion de fuerza bruta
 def mejor_oferente_fb():
@@ -126,7 +126,7 @@ def mejor_oferente_fb():
 
 # Función Programación Voráz
 def mejor_oferente_pv():
-    global venta_acciones, venta_acciones_gob, ganancia_gob
+    #global venta_acciones, venta_acciones_gob, ganancia_gob
     oferente = []
     contador_oferentes=0
     ganancia_gobierno_fb=0
@@ -164,7 +164,7 @@ def mejor_oferente_pv():
 
              #Ordenamos la lista de oferentes lexicograficamente
              oferentes_lexicografico = sorted(oferentes,key=lambda x: x)
-             #contdor de cantidad de oferentes para poder saber a que oferentes se le vendio
+             #contador de cantidad de oferentes para poder saber a que oferentes se le vendió
              contador_venta_of=0
              #contamos las acciones disponibles durante la ejecucion
              acciones_disponibles=A
@@ -172,18 +172,33 @@ def mejor_oferente_pv():
     
              for mejor_oferente in reversed(oferentes_lexicografico):
                 contador_venta_of+=1
-                #print('Precio al que cmpra: ' + str(mejor_oferente[0]))
+                #print('Precio al que compra: ' + str(mejor_oferente[0]))
                 #print('max: ' + str(mejor_oferente[1])) 
                 #print('min: ' + str(mejor_oferente[2]))
                 #Vendemos al primero de la lista y reducimos las accion que se vendieron 
-                if(acciones_disponibles != 0 and mejor_oferente[1] <= acciones_disponibles and mejor_oferente[1] != 0):
+                if(acciones_disponibles != 0 
+                   and mejor_oferente[2] <= acciones_disponibles
+                   and mejor_oferente [1] < acciones_disponibles
+                   and mejor_oferente[1] != 0):
                     #print(acciones_disponibles)
                     acciones_disponibles = acciones_disponibles - mejor_oferente[1]
+                    print(acciones_disponibles)
                     ganancia_gobierno_fb += mejor_oferente[0] * mejor_oferente[1]
                     venta_acciones = Label(ventana, text="Se vendieron: "+ str(mejor_oferente[1]) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
                     venta_acciones.pack()
-
-             if(acciones_disponibles != 0):
+                elif(acciones_disponibles != 0 
+                   and mejor_oferente[2] <= acciones_disponibles
+                   and mejor_oferente [1] >= acciones_disponibles
+                   and mejor_oferente[1] != 0):
+                    print(str(acciones_disponibles)+" uno")
+                    acciones_vendidas = acciones_disponibles
+                    acciones_disponibles = acciones_disponibles - acciones_disponibles
+                    ganancia_gobierno_fb += mejor_oferente[0] * acciones_vendidas
+                    print(str(acciones_disponibles)+" dos")
+                    venta_acciones = Label(ventana, text="Se vendieron: "+ str(acciones_vendidas) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
+                    venta_acciones.pack()
+                elif(acciones_disponibles != 0):
+                 print(str(acciones_disponibles)+" tres")
                  ganancia_gobierno_fb+=acciones_disponibles*B
                  venta_acciones_gob = Label(ventana, text="Se vendieron: "+ str(acciones_disponibles) + " acciones" + " al GOBIERNO a un precio de: "+ str(B))
                  venta_acciones_gob.pack()
@@ -199,6 +214,22 @@ boton_abrir = Button(
     cursor='X_cursor'
     )
 boton_abrir.pack()
+#Creamos boton para ejecutar fuerza bruta
+boton_mejor_fuerzabruta = Button(
+    ventana, 
+    text='Fuerza Bruta', 
+    command=mejor_oferente_fb,
+    cursor='X_cursor'
+    )
+boton_mejor_fuerzabruta.pack()
+#Creamos boton para ejecutar Programación Voráz
+boton_voraz = Button(
+    ventana, 
+    text='Programación Voráz', 
+    command=mejor_oferente_pv,
+    cursor='X_cursor'
+    )
+boton_voraz.pack()
 # Creamos el botón para limpiar el label
 boton_limpiar = Button(
     ventana, 
@@ -207,15 +238,6 @@ boton_limpiar = Button(
     cursor='X_cursor'
     )
 boton_limpiar.pack()
-#Creamos boton para ejecutar fuerza bruta
-boton_mejor_fuerzabruta = Button(
-    ventana, 
-    text='Mejor con fuerza bruta', 
-    command=mejor_oferente_fb,
-    cursor='X_cursor'
-    )
-boton_mejor_fuerzabruta.pack()
-
 
 
 
