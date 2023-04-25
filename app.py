@@ -1,19 +1,20 @@
 from tkinter import *
 from tkinter import filedialog
-import numpy as np
 
 #Definamos la ruta del archivo para poder ser vista por otras funciones
 ruta_archivo = ''
 
 # Creamos la ventana principal
 ventana = Tk()
+#titulo de la ventana
+ventana.title('ADA II')
 # Modificamos en tamaño de la ventana 
 ventana.geometry('600x400')
 
 # Función para abrir un archivo de texto (.sub o .psub)
 def abrir_archivo():
     
-    global trio, oferentes
+    global trio, imprimir_oferentes, oferentes_gob
     global ruta_archivo
     # Definimos los tipos de archivo permitidos
     tipos_archivo = [('Archivos de psubasta', '*.sub'),('Archivos de subasta', '*.sub') ]
@@ -28,6 +29,8 @@ def abrir_archivo():
                           
             #Obtenemos la informacion de: A - Acciones B - Precio C - numero de oferentes
              contador_oferentes=1
+             #indice para cargar los datos de los oferentes en una lista
+             indice_oferentes=0
              A = archivo.readline()
              B = archivo.readline()
              n = archivo.readline()
@@ -36,23 +39,30 @@ def abrir_archivo():
              trio = Label(ventana, text="Acciones:"+ A +"Precio: "+ B + "Oferentes: " + n )
              trio.pack()
 
+             
+
             #Imprimiendo los oferentes
             #Imprimir lineas en pantalla 
-             print('abrir')
              lineas = archivo.read().split('\n')
+             oferentes_aux = []
              for linea in lineas[:-1]:
                  if(contador_oferentes != len(lineas)-1):
-                    oferentes = Label(ventana, text="Oferente("+ str(contador_oferentes)+")" +"-->" + "Oferta" +"("+''.join(linea)+")")
-                    oferentes.pack()
+                    oferentes_aux.append("\n Oferente("+ str(contador_oferentes)+")" +"-->" + "Oferta" +"("+''.join(linea)+") ")
+                    oferentes = ''.join(oferentes_aux)
                     contador_oferentes+=1
+                    indice_oferentes+=1
                  else:
-                     oferentes = Label(ventana, text="Gobierno: "+"-->" + "Oferta" +"("+''.join(linea)+")")
-                     oferentes.pack()
+                     oferentes_gob = Label(ventana, text="Gobierno: "+"-->" + "Oferta" +"("+''.join(linea)+")")
+                     oferentes_gob.pack()
+
+             imprimir_oferentes = Label(ventana, text=oferentes)
+             imprimir_oferentes.pack()
 
 #Función para limpiar pantalla
 def limpiar_pantalla():
-    trio.config(text="")
-    oferentes.config(text="")
+    trio.destroy()
+    imprimir_oferentes.destroy()
+    oferentes_gob.destroy()
    # venta_acciones.pack_forget()
    # venta_acciones_gob.pack_forget()
    # ganancia_gob.pack_forget()
@@ -230,6 +240,7 @@ boton_voraz = Button(
     cursor='X_cursor'
     )
 boton_voraz.pack()
+
 # Creamos el botón para limpiar el label
 boton_limpiar = Button(
     ventana, 
