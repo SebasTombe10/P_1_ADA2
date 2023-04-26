@@ -116,7 +116,8 @@ def mejor_oferente_fb():
                     contador_oferentes+=1
 
              #Ordenamos la lista de oferentes lexicograficamente
-             oferentes_lexicografico = sorted(oferentes,key=lambda x: x)
+             oferentes_lexicografico = sorted(oferentes,key=lambda x: x) 
+             
              #contdor de cantidad de oferentes para poder saber a que oferentes se le vendio
              contador_venta_of=0
              #contamos las acciones disponibles durante la ejecucion
