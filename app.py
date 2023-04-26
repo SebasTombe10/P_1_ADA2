@@ -63,7 +63,7 @@ def limpiar_pantalla():
     trio.destroy()
     imprimir_oferentes.destroy()
     oferentes_gob.destroy()
-    venta_acciones_pv.destroy()
+    #venta_acciones_pv.destroy()
     venta_acciones_gob_pv.destroy()
     ganancia_gob_pv.destroy()
     venta_acciones.destroy()
@@ -182,6 +182,7 @@ def mejor_oferente_pv():
              #contamos las acciones disponibles durante la ejecucion
              acciones_disponibles=A
              #guardamos la ganancia del gobierno por cada venta
+             ventas_aux=[]
     
              for mejor_oferente in reversed(oferentes_lexicografico):
                 contador_venta_of+=1
@@ -197,8 +198,10 @@ def mejor_oferente_pv():
                     acciones_disponibles = acciones_disponibles - mejor_oferente[1]
                     print(acciones_disponibles)
                     ganancia_gobierno_fb += mejor_oferente[0] * mejor_oferente[1]
-                    venta_acciones_pv = Label(ventana, text="Se vendieron: "+ str(mejor_oferente[1]) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
-                    venta_acciones_pv.pack()
+                    ventas_aux.append("\nSe vendieron: "+ str(mejor_oferente[1]) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
+                    
+                    #venta_acciones_pv = Label(ventana, text="Se vendieron: "+ str(mejor_oferente[1]) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
+                    #venta_acciones_pv.pack()
                 elif(acciones_disponibles != 0 
                    and mejor_oferente[2] <= acciones_disponibles
                    and mejor_oferente [1] >= acciones_disponibles
@@ -208,17 +211,23 @@ def mejor_oferente_pv():
                     acciones_disponibles = acciones_disponibles - acciones_disponibles
                     ganancia_gobierno_fb += mejor_oferente[0] * acciones_vendidas
                     print(str(acciones_disponibles)+" dos")
-                    venta_acciones_pv = Label(ventana, text="Se vendieron: "+ str(acciones_vendidas) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
-                    venta_acciones_pv.pack()
+                    ventas_aux.append("\nSe vendieron: "+ str(acciones_vendidas) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
+                    #venta_acciones_pv = Label(ventana, text="Se vendieron: "+ str(acciones_vendidas) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
+                    #venta_acciones_pv.pack()
                 elif(acciones_disponibles != 0
                     and mejor_oferente[2] > acciones_disponibles):
                     print("Las acciones disponibles son menores a las minimas por comprar del oferente: "+str(contador_venta_of))
                 elif(acciones_disponibles != 0):
                  print(str(acciones_disponibles)+" tres")
                  ganancia_gobierno_fb+=acciones_disponibles*B
-                 venta_acciones_gob_pv = Label(ventana, text="Se vendieron: "+ str(acciones_disponibles) + " acciones" + " al GOBIERNO a un precio de: "+ str(B))
-                 venta_acciones_gob_pv.pack()
+                 ventas_aux.append("\nSe vendieron: "+ str(acciones_disponibles) + " acciones" + " al GOBIERNO a un precio de: "+ str(B))
+                 #venta_acciones_gob_pv = Label(ventana, text="Se vendieron: "+ str(acciones_disponibles) + " acciones" + " al GOBIERNO a un precio de: "+ str(B))
+                 #venta_acciones_gob_pv.pack()
     
+    ventas = ''.join(ventas_aux)
+    venta_acciones_gob_pv = Label(ventana, text=ventas)
+    venta_acciones_gob_pv.pack()
+
     ganancia_gob_pv = Label(ventana, text="Las ganancias del gobierno fueron: "+ str(ganancia_gobierno_fb))
     ganancia_gob_pv.pack()
 
