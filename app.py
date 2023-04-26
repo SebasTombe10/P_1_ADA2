@@ -64,7 +64,6 @@ def limpiar_pantalla():
     imprimir_oferentes.destroy()
     oferentes_gob.destroy()
     if "venta_acciones" in globals():
-        print("Existe")
         venta_acciones.destroy()
         venta_acciones_gob.destroy()
         ganancia_gob.destroy()
