@@ -23,10 +23,10 @@ def abrir_archivo():
     
     # Verificamos si se seleccionó un archivo
     if ruta_archivo != '':
-
+        
         # Abrimos el archivo y lo imprimimos en la consola
         with open(ruta_archivo, 'r') as archivo:
-                          
+                   
             #Obtenemos la informacion de: A - Acciones B - Precio C - numero de oferentes
              contador_oferentes=1
              #indice para cargar los datos de los oferentes en una lista
@@ -79,6 +79,7 @@ def limpiar_pantalla():
 # Funcion de fuerza bruta
 def mejor_oferente_fb():
     global venta_acciones, venta_acciones_gob, ganancia_gob
+    
     oferente = []
     contador_oferentes=0
     ganancia_gobierno_fb=0
@@ -260,6 +261,7 @@ boton_mejor_fuerzabruta = Button(
     cursor='X_cursor'
     )
 boton_mejor_fuerzabruta.pack()
+
 # Creamos boton para ejecutar Programación Voráz
 boton_voraz = Button(
     ventana, 
