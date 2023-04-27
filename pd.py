@@ -154,11 +154,12 @@ def subasta_publica():
             ganancia = ganancia_no
         
         memo[i][j] = ganancia
-        print(memo)
+        
         return memo[i][j]
     
     # Llamada inicial a la función recursiva
     print(dp(0, acciones))
+    
 
 # Botones
 # Creamos el botón para abrir el archivo
