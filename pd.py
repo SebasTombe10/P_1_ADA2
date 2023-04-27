@@ -1,7 +1,105 @@
-oferentes=[[52,6,2],[33,10,3],[23,0,0],[17,2,0],[7,6,0],[7,10,0]]
-acciones=10
-precio_minimo=7
-def subasta_publica(acciones, precio_minimo,oferentes):
+from tkinter import *
+from tkinter import filedialog
+
+#Definamos la ruta del archivo para poder ser vista por otras funciones
+ruta_archivo = ''
+
+# Creamos la ventana principal
+ventana = Tk()
+#titulo de la ventana
+ventana.title('ADA II-2')
+# Modificamos en tamaño de la ventana 
+ventana.geometry('600x400')
+
+# Función para abrir un archivo de texto (.sub o .psub)
+def abrir_archivo():
+    
+    global trio, imprimir_oferentes, oferentes_gob
+    global ruta_archivo
+    # Definimos los tipos de archivo permitidos
+    tipos_archivo = [('Archivos de psubasta', '*.psub'),('Archivos de subasta', '*.sub') ]
+    # Abrimos el diálogo para seleccionar el archivo
+    ruta_archivo = filedialog.askopenfilename(defaultextension='.sub', filetypes=tipos_archivo )
+    
+    # Verificamos si se seleccionó un archivo
+    if ruta_archivo != '':
+        
+        # Abrimos el archivo y lo imprimimos en la consola
+        with open(ruta_archivo, 'r') as archivo:
+                   
+            #Obtenemos la informacion de: A - Acciones B - Precio C - numero de oferentes
+             contador_oferentes=1
+             #indice para cargar los datos de los oferentes en una lista
+             indice_oferentes=0
+             A = archivo.readline()
+             B = archivo.readline()
+             n = archivo.readline()
+            #Imprimimos en la interfaz el trio de datos
+            
+             trio = Label(ventana, text="Acciones:"+ A +"Precio: "+ B + "Oferentes: " + n )
+             trio.pack()
+
+             
+
+            #Imprimiendo los oferentes
+            #Imprimir lineas en pantalla 
+             lineas = archivo.read().split('\n')
+             oferentes_aux = []
+             for linea in lineas[:-1]:
+                 if(contador_oferentes != len(lineas)-1):
+                    oferentes_aux.append("\n Oferente("+ str(contador_oferentes)+")" +"-->" + "Oferta" +"("+''.join(linea)+") ")
+                    oferentes = ''.join(oferentes_aux)
+                    contador_oferentes+=1
+                    indice_oferentes+=1
+                 else:
+                     oferentes_gob = Label(ventana, text="Gobierno: "+"-->" + "Oferta" +"("+''.join(linea)+")")
+                     oferentes_gob.pack()
+
+             imprimir_oferentes = Label(ventana, text=oferentes)
+             imprimir_oferentes.pack()
+
+# Función para limpiar pantalla
+def limpiar_pantalla():
+    trio.destroy()
+    imprimir_oferentes.destroy()
+    oferentes_gob.destroy()
+    
+
+def subasta_publica():
+
+    oferente = []
+    contador_oferentes=0
+
+    if ruta_archivo != '':
+        # Abrimos el archivo y lo imprimimos en la consola
+        with open(ruta_archivo, 'r') as archivo:
+             lineas = archivo.readlines()
+             #Obtenemos la informacion de: A - Acciones B - Precio C - numero de oferentes
+             acciones = int(lineas[0])
+             precio_minimo = int(lineas[1])
+             n = int(lineas[2])
+             #print(lineas)
+             #Iniciamos la lista en el tamaño de oferentes 
+             oferentes = [None] * len(lineas[3:-1])
+             for linea in lineas[3:-1]:
+                #valores contiene cada oferentes p,r,c - NO INCLUYE GOBIERNO
+                valores = linea.split(',')
+                #Valores de los oferentes
+                #p=oferta del oferente
+                #r=maximo de acciones que compra
+                #c=minimo de acciones que compra
+                #respectivamente
+                oferente.append(int(valores[0]))
+                oferente.append(int(valores[1]))
+                oferente.append(int(valores[2]))
+                #print(len(lineas[3:]))
+                #cargamos la lista oferentes con todos los oferentes
+                #ecordando que por ultimo esta el gobierno y las acciones 
+                #no vendiadaas seran vendidas al gobierno
+                if(contador_oferentes != len(lineas[3:])-1):
+                    oferentes[contador_oferentes] = oferente
+                    oferente = []
+                    contador_oferentes+=1
 
     n = len(oferentes)
     # Matriz de memoria para la programación dinámica
@@ -61,5 +159,25 @@ def subasta_publica(acciones, precio_minimo,oferentes):
     
     # Llamada inicial a la función recursiva
     print(dp(0, acciones))
+    
 
-subasta_publica(acciones, precio_minimo, oferentes)
+# Botones
+# Creamos el botón para abrir el archivo
+boton_abrir = Button(
+    ventana, 
+    text='Abrir archivo', 
+    command=(abrir_archivo),
+    cursor='X_cursor'
+    )
+boton_abrir.pack()
+# Creamos boton para ejecutar fuerza bruta
+boton_mejor_fuerzabruta = Button(
+    ventana, 
+    text='pd', 
+    command=subasta_publica,
+    cursor='X_cursor'
+    )
+boton_mejor_fuerzabruta.pack()
+
+# Ejecutamos el bucle principal de la ventana
+ventana.mainloop()
