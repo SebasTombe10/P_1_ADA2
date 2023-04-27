@@ -197,6 +197,7 @@ def mejor_oferente_pv():
     
              for mejor_oferente in reversed(oferentes_lexicografico):
                 contador_venta_of+=1
+                print(str(mejor_oferente[0])+" "+ str(mejor_oferente[1])+ " "+ str(mejor_oferente[2]))
                 #print('Precio al que compra: ' + str(mejor_oferente[0]))
                 #print('max: ' + str(mejor_oferente[1])) 
                 #print('min: ' + str(mejor_oferente[2]))
@@ -227,13 +228,14 @@ def mejor_oferente_pv():
                 elif(acciones_disponibles != 0
                     and mejor_oferente[2] > acciones_disponibles):
                     print("Las acciones disponibles son menores a las minimas por comprar del oferente: "+str(contador_venta_of))
-                elif(acciones_disponibles != 0):
+            
+    if(acciones_disponibles != 0):
                  print(str(acciones_disponibles)+" tres")
                  ganancia_gobierno_fb+=acciones_disponibles*B
                  ventas_aux.append("\nSe vendieron: "+ str(acciones_disponibles) + " acciones" + " al GOBIERNO a un precio de: "+ str(B))
                  #venta_acciones_gob_pv = Label(ventana, text="Se vendieron: "+ str(acciones_disponibles) + " acciones" + " al GOBIERNO a un precio de: "+ str(B))
                  #venta_acciones_gob_pv.pack()
-    
+
     ventas = ''.join(ventas_aux)
     venta_acciones_gob_pv = Label(ventana, text=ventas)
     venta_acciones_gob_pv.pack()
