@@ -80,8 +80,8 @@ def subasta_publica():
              n = int(lineas[2])
              #print(lineas)
              #Iniciamos la lista en el tamaño de oferentes 
-             oferentes = [None] * len(lineas[3:-1])
-             for linea in lineas[3:-1]:
+             oferentes = [None] * len(lineas[3:])
+             for linea in lineas[3:]:
                 #valores contiene cada oferentes p,r,c - NO INCLUYE GOBIERNO
                 valores = linea.split(',')
                 #Valores de los oferentes
@@ -96,12 +96,13 @@ def subasta_publica():
                 #cargamos la lista oferentes con todos los oferentes
                 #ecordando que por ultimo esta el gobierno y las acciones 
                 #no vendiadaas seran vendidas al gobierno
-                if(contador_oferentes != len(lineas[3:])-1):
+                if(contador_oferentes != len(lineas[3:])):
                     oferentes[contador_oferentes] = oferente
                     oferente = []
                     contador_oferentes+=1
 
     n = len(oferentes)
+    print("este es n: "+str(n))
     # Matriz de memoria para la programación dinámica
     memo = [[None for j in range(acciones + 1)] for i in range(n + 1)]
     
@@ -156,7 +157,7 @@ def subasta_publica():
             ganancia = ganancia_no
         
         memo[i][j] = ganancia
-        
+        print(memo)
         return memo[i][j]
     
     # Llamada inicial a la función recursiva
