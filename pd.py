@@ -129,8 +129,10 @@ def subasta_publica():
         minimo = oferta[2]
         
         max_acciones = min(j, maximo) # No se pueden comprar más acciones de las que ofrece la oferta o de las que quedan por vender
+        print(max_acciones)
         min_acciones = min(j, minimo) # Se deben comprar al menos las acciones mínimas o las que quedan por vender
-        
+        print(min_acciones)
+        print("----------------")
         # Si no se pueden comprar las acciones mínimas, se descarta la oferta
         if min_acciones > max_acciones:
             memo[i][j] = dp(i+1, j)

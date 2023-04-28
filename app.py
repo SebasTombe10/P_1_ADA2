@@ -1,5 +1,7 @@
 from tkinter import *
 from tkinter import filedialog
+import datetime
+
 
 #Definamos la ruta del archivo para poder ser vista por otras funciones
 ruta_archivo = ''
@@ -65,6 +67,7 @@ def limpiar_pantalla():
     oferentes_gob.destroy()
     if "venta_acciones" in globals():
         venta_acciones.destroy()
+        no_venta_acciones.destroy()
         venta_acciones_gob.destroy()
         ganancia_gob.destroy()
     else:(print("No existe aún"))
@@ -78,11 +81,13 @@ def limpiar_pantalla():
 
 # Funcion de fuerza bruta
 def mejor_oferente_fb():
-    global venta_acciones, venta_acciones_gob, ganancia_gob
+    global venta_acciones,no_venta_acciones, venta_acciones_gob, ganancia_gob
     
     oferente = []
     contador_oferentes=0
     ganancia_gobierno_fb=0
+    txt_ventas_aux=[]
+    acciones_disponibles = 0
     # Verificamos si se seleccionó un archivo
     if ruta_archivo != '':
         # Abrimos el archivo y lo imprimimos en la consola
@@ -120,25 +125,34 @@ def mejor_oferente_fb():
              
              #contdor de cantidad de oferentes para poder saber a que oferentes se le vendio
              contador_venta_of=0
+             txt_contador_venta_of=0
              #contamos las acciones disponibles durante la ejecucion
              acciones_disponibles=A
              #guardamos la ganancia del gobierno por cada venta
              ventas_aux=[]
+             no_ventas_aux=[]
+             
+             txt_ventas_aux=[0 for i in range(len(oferentes_lexicografico))]
              for mejor_oferente in reversed(oferentes_lexicografico):
                 contador_venta_of+=1
-
+                
                 #Vendemos al primero de la lista y reducimos las accion que se vendieron 
                 if(acciones_disponibles != 0 and mejor_oferente[1] <= acciones_disponibles and mejor_oferente[1] != 0):
                     #print(acciones_disponibles)
                     acciones_disponibles = acciones_disponibles - mejor_oferente[1]
                     ganancia_gobierno_fb += mejor_oferente[0] * mejor_oferente[1]
                     ventas_aux.append("\nSe vendieron: "+ str(mejor_oferente[1]) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
+                    txt_ventas_aux[txt_contador_venta_of] = str(mejor_oferente[1])
                     #venta_acciones = Label(ventana, text="Se vendieron: "+ str(mejor_oferente[1]) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
                     #venta_acciones.pack()
+                else:
+                    no_ventas_aux.append("\nNo se vendieron acciones" + " al oferente: " + str(contador_venta_of))
+                
+                txt_contador_venta_of+=1
 
              ventas = ''.join(ventas_aux)
              venta_acciones = Label(ventana, text=ventas)
-             venta_acciones.pack()   
+             venta_acciones.pack()
 
              if(acciones_disponibles != 0):
                  ganancia_gobierno_fb+=acciones_disponibles*B
@@ -147,7 +161,26 @@ def mejor_oferente_fb():
     
     
     ganancia_gob = Label(ventana, text="Las ganancias del gobierno fueron: "+ str(ganancia_gobierno_fb))
-    ganancia_gob.pack()              
+    ganancia_gob.pack()
+
+    # Concatenar los elementos de la lista en una variable
+    lista_vertical = "\n".join(str(elemento) for elemento in txt_ventas_aux)
+    
+    #Imprimiend el archivo de salida
+    # Obtener la fecha y hora actual
+    fecha_actual = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    
+    # Concatenar la fecha y hora al nombre del archivo
+    nombre_archivo = f"Fuerza_bruta_{fecha_actual}.txt"
+
+    # Obtener la ruta y el nombre del archivo de salida
+    archivo_salida = filedialog.asksaveasfilename(defaultextension=".txt",
+                                                  filetypes=[("Archivos de texto", "*.txt"),
+                                                             ("Todos los archivos", "*.*")],
+                                                   initialfile=nombre_archivo )
+    # Escribir los datos en el archivo
+    with open(archivo_salida, "w") as archivo:
+        archivo.write("costo \n" + str(ganancia_gobierno_fb) + "\n" + lista_vertical + "\n" +"resto \n" + str(acciones_disponibles))              
 
 # Función Programación Voráz
 def mejor_oferente_pv():
@@ -155,6 +188,8 @@ def mejor_oferente_pv():
     oferente = []
     contador_oferentes=0
     ganancia_gobierno_fb=0
+    txt_ventas_aux=[]
+    acciones_disponibles = 0
     # Verificamos si se seleccionó un archivo
     if ruta_archivo != '':
         # Abrimos el archivo y lo imprimimos en la consola
@@ -191,11 +226,13 @@ def mejor_oferente_pv():
              oferentes_lexicografico = sorted(oferentes,key=lambda x: x)
              #contador de cantidad de oferentes para poder saber a que oferentes se le vendió
              contador_venta_of=0
+             txt_contador_venta_of=0
              #contamos las acciones disponibles durante la ejecucion
              acciones_disponibles=A
              #guardamos la ganancia del gobierno por cada venta
              ventas_aux=[]
-    
+
+             txt_ventas_aux=[0 for i in range(len(oferentes_lexicografico))]
              for mejor_oferente in reversed(oferentes_lexicografico):
                 contador_venta_of+=1
                 print(str(mejor_oferente[0])+" "+ str(mejor_oferente[1])+ " "+ str(mejor_oferente[2]))
@@ -212,6 +249,7 @@ def mejor_oferente_pv():
                     print(acciones_disponibles)
                     ganancia_gobierno_fb += mejor_oferente[0] * mejor_oferente[1]
                     ventas_aux.append("\nSe vendieron: "+ str(mejor_oferente[1]) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
+                    txt_ventas_aux[txt_contador_venta_of] = str(mejor_oferente[1])
                     #venta_acciones_pv = Label(ventana, text="Se vendieron: "+ str(mejor_oferente[1]) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
                     #venta_acciones_pv.pack()
                 elif(acciones_disponibles != 0 
@@ -224,12 +262,15 @@ def mejor_oferente_pv():
                     ganancia_gobierno_fb += mejor_oferente[0] * acciones_vendidas
                     print(str(acciones_disponibles)+" dos")
                     ventas_aux.append("\nSe vendieron: "+ str(acciones_vendidas) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
+                    txt_ventas_aux[txt_contador_venta_of] = str(acciones_vendidas)
                     #venta_acciones_pv = Label(ventana, text="Se vendieron: "+ str(acciones_vendidas) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
                     #venta_acciones_pv.pack()
                 elif(acciones_disponibles != 0
                     and mejor_oferente[2] > acciones_disponibles):
                     print("Las acciones disponibles son menores a las minimas por comprar del oferente: "+str(contador_venta_of))
-            
+                
+                txt_contador_venta_of+=1
+
     if(acciones_disponibles != 0):
                  print(str(acciones_disponibles)+" tres")
                  ganancia_gobierno_fb+=acciones_disponibles*B
@@ -243,6 +284,25 @@ def mejor_oferente_pv():
 
     ganancia_gob_pv = Label(ventana, text="Las ganancias del gobierno fueron: "+ str(ganancia_gobierno_fb))
     ganancia_gob_pv.pack()
+
+    # Concatenar los elementos de la lista en una variable
+    lista_vertical = "\n".join(str(elemento) for elemento in txt_ventas_aux)
+
+    #Imprimiend el archivo de salida
+    # Obtener la fecha y hora actual
+    fecha_actual = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    
+    # Concatenar la fecha y hora al nombre del archivo
+    nombre_archivo = f"Programacion voraz_{fecha_actual}.txt"
+
+    # Obtener la ruta y el nombre del archivo de salida
+    archivo_salida = filedialog.asksaveasfilename(defaultextension=".txt",
+                                                  filetypes=[("Archivos de texto", "*.txt"),
+                                                             ("Todos los archivos", "*.*")],
+                                                   initialfile=nombre_archivo )
+    # Escribir los datos en el archivo
+    with open(archivo_salida, "w") as archivo:
+        archivo.write("costo \n" + str(ganancia_gobierno_fb) + "\n" + lista_vertical + "\n" +"resto \n" + str(acciones_disponibles))
 
 # Botones
 # Creamos el botón para abrir el archivo
