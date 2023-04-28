@@ -4,12 +4,30 @@ from tkinter import filedialog
 #Definamos la ruta del archivo para poder ser vista por otras funciones
 ruta_archivo = ''
 
-# Creamos la ventana principal
+# Creamos la content principal
 ventana = Tk()
-#titulo de la ventana
+#titulo de la content
 ventana.title('ADA II')
-# Modificamos en tamaño de la ventana 
+# Modificamos en tamaño de la content 
 ventana.geometry('600x400')
+# Crear un marco dentro de la content principal
+frame = Frame(ventana)
+frame.pack(fill=BOTH, expand=True)
+
+# Agregar un widget de barra de desplazamiento al marco
+scrollbar = Scrollbar(frame, orient=VERTICAL)
+scrollbar.pack(side=RIGHT, fill=Y)
+
+# Agregar el widget de contenido a la content principal
+canvas = Canvas(frame, yscrollcommand=scrollbar.set)
+canvas.pack(side=LEFT, fill=BOTH, expand=True)
+
+# Conectar el widget de contenido al widget de la barra de desplazamiento
+scrollbar.config(command=canvas.yview)
+# Añadir contenido al canvas
+content = Frame(canvas)
+canvas.create_window((300, 70), window=content, anchor=CENTER)
+
 
 # Función para abrir un archivo de texto (.sub o .psub)
 def abrir_archivo():
@@ -36,7 +54,7 @@ def abrir_archivo():
              n = archivo.readline()
             #Imprimimos en la interfaz el trio de datos
             
-             trio = Label(ventana, text="Acciones:"+ A +"Precio: "+ B + "Oferentes: " + n )
+             trio = Label(content, text="Acciones:"+ A +"Precio: "+ B + "Oferentes: " + n )
              trio.pack()
 
              
@@ -52,10 +70,10 @@ def abrir_archivo():
                     contador_oferentes+=1
                     indice_oferentes+=1
                  else:
-                     oferentes_gob = Label(ventana, text="Gobierno: "+"-->" + "Oferta" +"("+''.join(linea)+")")
+                     oferentes_gob = Label(content, text="Gobierno: "+"-->" + "Oferta" +"("+''.join(linea)+")")
                      oferentes_gob.pack()
 
-             imprimir_oferentes = Label(ventana, text=oferentes)
+             imprimir_oferentes = Label(content, text=oferentes)
              imprimir_oferentes.pack()
 
 # Función para limpiar pantalla
@@ -75,9 +93,8 @@ def limpiar_pantalla():
         ganancia_gob_pv.destroy()
     else:(print("No existe aún pv"))
 
-
 # Funcion de fuerza bruta
-def mejor_oferente_fb():
+def accionesFB():
     global venta_acciones, venta_acciones_gob, ganancia_gob
     
     oferente = []
@@ -133,24 +150,24 @@ def mejor_oferente_fb():
                     acciones_disponibles = acciones_disponibles - mejor_oferente[1]
                     ganancia_gobierno_fb += mejor_oferente[0] * mejor_oferente[1]
                     ventas_aux.append("\nSe vendieron: "+ str(mejor_oferente[1]) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
-                    #venta_acciones = Label(ventana, text="Se vendieron: "+ str(mejor_oferente[1]) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
+                    #venta_acciones = Label(content, text="Se vendieron: "+ str(mejor_oferente[1]) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
                     #venta_acciones.pack()
 
              ventas = ''.join(ventas_aux)
-             venta_acciones = Label(ventana, text=ventas)
+             venta_acciones = Label(content, text=ventas)
              venta_acciones.pack()   
 
              if(acciones_disponibles != 0):
                  ganancia_gobierno_fb+=acciones_disponibles*B
-                 venta_acciones_gob = Label(ventana, text="Se vendieron: "+ str(acciones_disponibles) + " acciones" + " al GOBIERNO a un precio de: "+ str(B))
+                 venta_acciones_gob = Label(content, text="Se vendieron: "+ str(acciones_disponibles) + " acciones" + " al GOBIERNO a un precio de: "+ str(B))
                  venta_acciones_gob.pack()
     
     
-    ganancia_gob = Label(ventana, text="Las ganancias del gobierno fueron: "+ str(ganancia_gobierno_fb))
+    ganancia_gob = Label(content, text="Las ganancias del gobierno fueron: "+ str(ganancia_gobierno_fb))
     ganancia_gob.pack()              
 
 # Función Programación Voráz
-def mejor_oferente_pv():
+def accionesV():
     global venta_acciones_pv, venta_acciones_gob_pv, ganancia_gob_pv
     oferente = []
     contador_oferentes=0
@@ -212,7 +229,7 @@ def mejor_oferente_pv():
                     print(acciones_disponibles)
                     ganancia_gobierno_fb += mejor_oferente[0] * mejor_oferente[1]
                     ventas_aux.append("\nSe vendieron: "+ str(mejor_oferente[1]) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
-                    #venta_acciones_pv = Label(ventana, text="Se vendieron: "+ str(mejor_oferente[1]) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
+                    #venta_acciones_pv = Label(content, text="Se vendieron: "+ str(mejor_oferente[1]) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
                     #venta_acciones_pv.pack()
                 elif(acciones_disponibles != 0 
                    and mejor_oferente[2] <= acciones_disponibles
@@ -224,7 +241,7 @@ def mejor_oferente_pv():
                     ganancia_gobierno_fb += mejor_oferente[0] * acciones_vendidas
                     print(str(acciones_disponibles)+" dos")
                     ventas_aux.append("\nSe vendieron: "+ str(acciones_vendidas) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
-                    #venta_acciones_pv = Label(ventana, text="Se vendieron: "+ str(acciones_vendidas) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
+                    #venta_acciones_pv = Label(content, text="Se vendieron: "+ str(acciones_vendidas) + " acciones" + " al oferente: (" + str(contador_venta_of) +") a un precio de: "+ str(mejor_oferente[0]))
                     #venta_acciones_pv.pack()
                 elif(acciones_disponibles != 0
                     and mejor_oferente[2] > acciones_disponibles):
@@ -234,45 +251,45 @@ def mejor_oferente_pv():
                  print(str(acciones_disponibles)+" tres")
                  ganancia_gobierno_fb+=acciones_disponibles*B
                  ventas_aux.append("\nSe vendieron: "+ str(acciones_disponibles) + " acciones" + " al GOBIERNO a un precio de: "+ str(B))
-                 #venta_acciones_gob_pv = Label(ventana, text="Se vendieron: "+ str(acciones_disponibles) + " acciones" + " al GOBIERNO a un precio de: "+ str(B))
+                 #venta_acciones_gob_pv = Label(content, text="Se vendieron: "+ str(acciones_disponibles) + " acciones" + " al GOBIERNO a un precio de: "+ str(B))
                  #venta_acciones_gob_pv.pack()
 
     ventas = ''.join(ventas_aux)
-    venta_acciones_gob_pv = Label(ventana, text=ventas)
+    venta_acciones_gob_pv = Label(content, text=ventas)
     venta_acciones_gob_pv.pack()
 
-    ganancia_gob_pv = Label(ventana, text="Las ganancias del gobierno fueron: "+ str(ganancia_gobierno_fb))
+    ganancia_gob_pv = Label(content, text="Las ganancias del gobierno fueron: "+ str(ganancia_gobierno_fb))
     ganancia_gob_pv.pack()
 
 # Botones
 # Creamos el botón para abrir el archivo
 boton_abrir = Button(
-    ventana, 
+    content, 
     text='Abrir archivo', 
     command=(abrir_archivo),
     cursor='X_cursor'
     )
 boton_abrir.pack()
 # Creamos boton para ejecutar fuerza bruta
-boton_mejor_fuerzabruta = Button(
-    ventana, 
+boton_fuerzabruta = Button(
+    content, 
     text='Fuerza Bruta', 
-    command=mejor_oferente_fb,
+    command=accionesFB,
     cursor='X_cursor'
     )
-boton_mejor_fuerzabruta.pack()
+boton_fuerzabruta.pack()
 
 # Creamos boton para ejecutar Programación Voráz
 boton_voraz = Button(
-    ventana, 
-    text='Programación Voráz', 
-    command=mejor_oferente_pv,
+    content, 
+    text='Programación Voraz', 
+    command=accionesV,
     cursor='X_cursor'
     )
 boton_voraz.pack()
 # Creamos el botón para limpiar el label
 boton_limpiar = Button(
-    ventana, 
+    content, 
     text='Limpiar', 
     command=limpiar_pantalla,
     cursor='X_cursor'
@@ -280,5 +297,5 @@ boton_limpiar = Button(
 boton_limpiar.pack()
 
 
-# Ejecutamos el bucle principal de la ventana
-ventana.mainloop()
+# Ejecutamos el bucle principal de la content
+content.mainloop()
