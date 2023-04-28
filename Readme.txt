@@ -1,7 +1,7 @@
 
 Proyecto Uno - Programacion dinamica y voraz 
 
-Al realizar la ejecución de nuestro codigo se deberá iniciar la interfaz grafica 
+Al realizar la ejecución de nuestro codigo (archivo app.py) se deberá iniciar la interfaz grafica 
 en la cuál usted podrá visualizar 4 Botones:
 
 - Abrir archivo: este botón le permitirá seleccionar un archivo del tipo .sub o .psub donde
