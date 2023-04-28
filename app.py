@@ -8,28 +8,33 @@ ruta_archivo = ''
 
 # Creamos la content principal
 ventana = Tk()
+
 #titulo de la content
 ventana.title('ADA II')
+
 # Modificamos en tamaño de la content 
-ventana.geometry('600x400')
+ventana.geometry('500x400')
+
 # Crear un marco dentro de la content principal
 frame = Frame(ventana)
 frame.pack(fill=BOTH, expand=True)
 
-# Agregar un widget de barra de desplazamiento al marco
-scrollbar = Scrollbar(frame, orient=VERTICAL)
-scrollbar.pack(side=RIGHT, fill=Y)
-
 # Agregar el widget de contenido a la content principal
-canvas = Canvas(frame, yscrollcommand=scrollbar.set)
+canvas = Canvas(frame)
 canvas.pack(side=LEFT, fill=BOTH, expand=True)
 
+# Agregar un widget de barra de desplazamiento al marco
+scrollbar = Scrollbar(frame, orient=VERTICAL, command=canvas.yview)
+scrollbar.pack(side=RIGHT, fill=Y)
+
 # Conectar el widget de contenido al widget de la barra de desplazamiento
-scrollbar.config(command=canvas.yview)
+canvas.configure(yscrollcommand=scrollbar.set)
+
 # Añadir contenido al canvas
 content = Frame(canvas)
-canvas.create_window((300, 70), window=content, anchor=CENTER)
-
+canvas.create_window((canvas.winfo_reqwidth()/2, 0), window=content, anchor=NW)
+print(canvas.winfo_reqwidth()/2)
+canvas.config(scrollregion=(0,0,0,4000))
 
 # Función para abrir un archivo de texto (.sub o .psub)
 def abrir_archivo():
@@ -85,7 +90,7 @@ def limpiar_pantalla():
     oferentes_gob.destroy()
     if "venta_acciones" in globals():
         venta_acciones.destroy()
-        no_venta_acciones.destroy()
+       
         venta_acciones_gob.destroy()
         ganancia_gob.destroy()
     else:(print("No existe aún"))
